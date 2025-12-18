@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.text.DateFormat;
 import java.time.Instant;
-import java.util.List;
 
 @Entity
 @Table(name = "posts")
@@ -28,8 +26,8 @@ public class Post {
     @Column(nullable = false)
     private Integer likes = 0;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+    @Column(name = "created_at")
+    private Instant createdAt= Instant.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

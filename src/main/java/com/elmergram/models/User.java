@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -24,11 +23,12 @@ public class User {
     private String username;
     private String bio;
     private String pfp_url;
-    private Integer followers;
-    private Integer following;
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Date createdAt;
+    private Integer followers=0;
+    private Integer following=0;
+    private String password;
 
+    @Column(name = "created_at")
+    private Instant createdAt= Instant.now();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Post> posts;

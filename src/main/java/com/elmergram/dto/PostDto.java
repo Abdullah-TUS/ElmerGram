@@ -1,5 +1,9 @@
 package com.elmergram.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.Instant;
 import java.util.List;
 
@@ -11,6 +15,8 @@ public class PostDto {
     ) {}
 
     public record Summary(
+            @NotBlank
+            @Min(1)
             Integer id,
             String media
     ) {}
@@ -26,7 +32,10 @@ public class PostDto {
 
     public record Create(
             String description,
-            String mediaUrl,
+            @NotBlank(message = "a post must have media.")
+            String media,
+            @NotNull(message = "user id must be provided.")
+            @Min(value = 1, message = "user id must be at least 1.")
             Integer userId
     ) {}
 }
