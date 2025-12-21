@@ -6,13 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.time.Instant;
-import java.util.List;
 
 public class UserDto {
-    public record Response(
-            String status,
-            List<Data> data
-    ){}
     public record Create(
             @NotBlank(message = "Username is required")
             @Size(min = 3, max = 30, message = "Username must be between 3 and 30 characters")

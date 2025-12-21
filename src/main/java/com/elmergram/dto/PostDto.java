@@ -36,7 +36,7 @@ public class PostDto {
             String media,
             @NotNull(message = "user id must be provided.")
             @Min(value = 1, message = "user id must be at least 1.")
-            Integer userId
+            String username
     ) {}
 }
 

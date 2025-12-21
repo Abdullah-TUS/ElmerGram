@@ -1,5 +1,6 @@
 package com.elmergram.services;
 
+import com.elmergram.dto.ExplorerDto;
 import com.elmergram.dto.PostDto;
 import com.elmergram.exceptions.posts.PostNotFoundException;
 import com.elmergram.exceptions.users.UserNotFoundException;
@@ -9,9 +10,9 @@ import com.elmergram.repositories.PostRepository;
 import com.elmergram.repositories.UserRepository;
 import com.elmergram.responses.ApiResponse;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.DuplicateFormatFlagsException;
 import java.util.List;
 
 @Service
@@ -55,13 +56,17 @@ public class PostService {
                         post.getUser().getId()
                 )
                         ).orElseThrow(()-> new PostNotFoundException("couldn't find post with the id: "+postId+". wrong id perhaps?"));
-        return new ApiResponse.Success<>(List.of(dto));
+        return new ApiResponse.Success<>(dto);
     }
 
     @Transactional
     public ApiResponse addPost(PostDto.Create dto){
 
-        User user = userRepository.getReferenceById(dto.userId());
+        User user = userRepository.findByUsernameIgnoreCase(dto.username());
+        if (user == null) {
+            throw new UserNotFoundException("username not found");
+        }
+
         Post post = new Post();
         post.setDescription(dto.description());
         post.setMedia(dto.media());
@@ -78,7 +83,22 @@ public class PostService {
                 post.getUser().getId()
         );
 
-        return new ApiResponse.Success<>(List.of(resDto));
+        return new ApiResponse.Success<>(resDto);
+    }
+
+    public ApiResponse getExplorerPosts(Pageable pageable) {
+        var page = postRepository.findAll(pageable);
+
+        ExplorerDto.Response response = new ExplorerDto.Response(
+                page.getContent(),
+                page.getNumber(),
+                page.getSize(),
+                page.getNumberOfElements(),
+                page.getTotalPages(),
+                page.isLast()
+        );
+
+        return new ApiResponse.Success<>(response);
     }
 
 }

@@ -15,5 +15,6 @@ public class URLs {
         public static final String BASE_URL = "/api/v1/posts";
         public static final String GET_POST="{postId}";
         public static final String POST_POST="";
+        public static final String POST_EXPLORER="/explorer";
     }
 }

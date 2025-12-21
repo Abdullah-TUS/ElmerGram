@@ -85,7 +85,7 @@ public class UserService {
                 user.getBio()
 
         );
-        return new ApiResponse.Success<>(List.of(data));
+        return new ApiResponse.Success<>(data);
     }
 
     public ApiResponse updateUser(String username, UserDto.Patch dto) {
