@@ -1,5 +1,6 @@
 package com.elmergram.dto;
 
+import com.elmergram.models.Post;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,10 +10,6 @@ import java.util.List;
 
 public class PostDto {
 
-    public record Response<T>(
-            String status,
-            List<T> data
-    ) {}
 
     public record Summary(
             @NotBlank
@@ -38,5 +35,16 @@ public class PostDto {
             @Min(value = 1, message = "user id must be at least 1.")
             String username
     ) {}
+
+    public record Response(
+            List<Summary> content,
+            int pageNumber,
+            int pageSize,
+            long totalElements,
+            int totalPages,
+            boolean last
+
+    ){}
+
 }
 

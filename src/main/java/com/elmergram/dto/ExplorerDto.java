@@ -7,7 +7,7 @@ import java.util.List;
 public class ExplorerDto {
 
     public record Response(
-            List<Post> content,
+            List<PostDto.Summary> content,
             int pageNumber,
             int pageSize,
             int totalElements,

@@ -5,6 +5,9 @@ import com.elmergram.responses.ApiResponse;
 import com.elmergram.services.PostService;
 import com.elmergram.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,8 +45,12 @@ public class UserController {
     }
 
     @GetMapping(GET_USER_POSTS)
-    public ResponseEntity<ApiResponse> getUserPosts(@PathVariable String username) {
-        return ResponseEntity.ok(postService.getUserPosts(username));
+    public ResponseEntity<ApiResponse> getUserPosts(@PathVariable String username,
+                                                    @RequestParam(value = "pageNumber",defaultValue = "0",required = false)int pageNumber,
+                                                    @RequestParam(value = "pageSize",defaultValue = "10",required = false)int pageSize
+                                                    ) {
+        Pageable page = PageRequest.of(pageNumber,pageSize);
+        return ResponseEntity.ok(postService.getUserPosts(page,username));
     }
 
     @CrossOrigin(origins = "*")

@@ -10,6 +10,7 @@ import com.elmergram.repositories.PostRepository;
 import com.elmergram.repositories.UserRepository;
 import com.elmergram.responses.ApiResponse;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -25,23 +26,34 @@ public class PostService {
         this.userRepository = userRepository;
     }
 
-    public ApiResponse getUserPosts(String username) {
+    public ApiResponse getUserPosts(Pageable page, String username) {
 
         User user = userRepository.findByUsernameIgnoreCase(username);
         if (user == null) {
             throw new UserNotFoundException("username not found");
         }
 
-        List<PostDto.Summary> posts = postRepository.findByUserId(user.getId())
-                .stream()
-                .map(post -> new PostDto.Summary(
+        Page<Post> postPage = postRepository.findByUserId(user.getId(), page);
+
+        Page<PostDto.Summary> dtoPage = postPage.map(post ->
+                new PostDto.Summary(
                         post.getId(),
                         post.getMedia()
-                ))
-                .toList();
+                )
+        );
 
-        return new ApiResponse.Success<>(posts);
+        PostDto.Response response = new PostDto.Response(
+                dtoPage.getContent(),
+                dtoPage.getNumber(),
+                dtoPage.getSize(),
+                dtoPage.getTotalElements(),
+                dtoPage.getTotalPages(),
+                dtoPage.isLast()
+        );
+
+        return new ApiResponse.Success<>(response);
     }
+
 
 
     public ApiResponse getPostDetails( Integer postId){
@@ -90,7 +102,12 @@ public class PostService {
         var page = postRepository.findAll(pageable);
 
         ExplorerDto.Response response = new ExplorerDto.Response(
-                page.getContent(),
+                page.getContent().stream().map(
+                        post -> new PostDto.Summary(
+                                post.getId(),
+                                post.getMedia()
+                        )
+                ).toList(),
                 page.getNumber(),
                 page.getSize(),
                 page.getNumberOfElements(),
