@@ -20,5 +20,10 @@ public class AuthDto {
             String password
     ) {}
 
+    public record LoginResponse(
+            String jwt,
+            String username
+    ){}
+
 }
 

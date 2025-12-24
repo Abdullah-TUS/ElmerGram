@@ -1,11 +1,14 @@
 package com.elmergram.controllers;
 
 import com.elmergram.dto.AuthDto;
+import com.elmergram.jwt.JwtUtils;
 import com.elmergram.responses.ApiResponse;
 import com.elmergram.services.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +23,8 @@ public class AuthController {
 
     private final AuthService authService;
 
+
+
     @PostMapping(REGISTER)
     public ResponseEntity<String> register(@Valid @RequestBody AuthDto.Register dto){
         authService.register(dto);
@@ -28,7 +33,6 @@ public class AuthController {
 
     @PostMapping(LOGIN)
     public ResponseEntity<ApiResponse> login (@Valid @RequestBody AuthDto.Login dto){
-
         return ResponseEntity.ok().body(authService.login(dto));
 
     }
