@@ -1,6 +1,13 @@
 package com.elmergram.constants;
 
 public class URLs {
+    public static class AUTH{
+        public static final String BASE_URL = "/api/v1/auth";
+        public static final String REGISTER = "/register";
+        public static final String LOGIN="/login";
+    }
+
+
     public static class USER {
         public static final String BASE_URL = "/api/v1/users";
         public static final String CREATE_USER ="";

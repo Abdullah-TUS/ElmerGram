@@ -1,6 +1,5 @@
 package com.elmergram.dto;
 
-import com.elmergram.models.Post;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +14,8 @@ public class PostDto {
             @NotBlank
             @Min(1)
             Integer id,
-            String media
+            String media,
+            String username
     ) {}
 
     public record Detail(

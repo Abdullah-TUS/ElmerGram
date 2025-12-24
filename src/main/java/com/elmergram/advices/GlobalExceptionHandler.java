@@ -1,5 +1,6 @@
 package com.elmergram.advices;
 
+import com.elmergram.exceptions.auth.InvalidCredentialsException;
 import com.elmergram.exceptions.posts.PostNotFoundException;
 import com.elmergram.exceptions.users.UserAlreadyExistsException;
 import com.elmergram.exceptions.users.UserNotFoundException;
@@ -43,6 +44,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PostNotFoundException.class)
     public ResponseEntity<ErrorResponse> handlePostNotFoundException(PostNotFoundException ex, WebRequest req){
         return buildError(HttpStatus.NOT_FOUND, ex.getMessage(), req);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentialsException(InvalidCredentialsException ex, WebRequest req){
+        return buildError(HttpStatus.BAD_REQUEST, ex.getMessage(), req);
     }
 
 

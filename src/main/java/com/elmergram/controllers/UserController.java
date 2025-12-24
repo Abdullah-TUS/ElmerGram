@@ -4,29 +4,25 @@ import com.elmergram.dto.UserDto;
 import com.elmergram.responses.ApiResponse;
 import com.elmergram.services.PostService;
 import com.elmergram.services.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.elmergram.constants.URLs.USER.*;
 
 
-@CrossOrigin(origins = "*")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = BASE_URL)
 public class UserController {
     private final UserService userService;
     private final PostService postService;
-
-    @Autowired
-    public UserController(UserService userService, PostService postService){
-        this.userService=userService;
-        this.postService = postService;
-    }
 
 
     @PostMapping(CREATE_USER)
@@ -34,6 +30,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.addUser(dto));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(GET_USERS)
     public ResponseEntity<ApiResponse> getAllUsers() {
         return ResponseEntity.ok(userService.getUsers());
@@ -53,7 +50,6 @@ public class UserController {
         return ResponseEntity.ok(postService.getUserPosts(page,username));
     }
 
-    @CrossOrigin(origins = "*")
     @PatchMapping(UPDATE_USER)
     public ResponseEntity<ApiResponse> updateUser(@PathVariable String username,@RequestBody UserDto.Patch dto){
         return ResponseEntity.ok(userService.updateUser(username,dto));

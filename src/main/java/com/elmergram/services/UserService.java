@@ -3,7 +3,7 @@ package com.elmergram.services;
 import com.elmergram.dto.UserDto;
 import com.elmergram.exceptions.users.UserAlreadyExistsException;
 import com.elmergram.exceptions.users.UserNotFoundException;
-import com.elmergram.models.User;
+import com.elmergram.models.UserEntity;
 import com.elmergram.repositories.UserRepository;
 import com.elmergram.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,22 +31,22 @@ public class UserService {
                     "Username already used. Maybe try: " + suggestion
             );        }
 
-        User user = new User();
-        user.setUsername(dto.username());
-        user.setBio(dto.bio());
-        user.setPfp_url(dto.pfp_url());
-        user.setPassword(dto.password());
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(dto.username());
+        userEntity.setBio(dto.bio());
+        userEntity.setPfp_url(dto.pfp_url());
+        userEntity.setPassword(dto.password());
 
-        userRepository.save(user);
+        userRepository.save(userEntity);
 
         UserDto.Data userData = new UserDto.Data(
-                user.getId(),
-                user.getUsername(),
-                user.getPfp_url(),
-                user.getFollowers(),
-                user.getFollowing(),
-                user.getCreatedAt(),
-                user.getBio()
+                userEntity.getId(),
+                userEntity.getUsername(),
+                userEntity.getPfp_url(),
+                userEntity.getFollowers(),
+                userEntity.getFollowing(),
+                userEntity.getCreatedAt(),
+                userEntity.getBio()
         );
 
         return new ApiResponse.Success<>(List.of(userData));
@@ -56,74 +56,74 @@ public class UserService {
     public ApiResponse getUsers() {
         List<UserDto.Data> users = userRepository.findAll()
                 .stream()
-                .map(user -> new UserDto.Data(
-                        user.getId(),
-                        user.getUsername(),
-                        user.getPfp_url(),
+                .map(userEntity -> new UserDto.Data(
+                        userEntity.getId(),
+                        userEntity.getUsername(),
+                        userEntity.getPfp_url(),
                         null,
                         null,
                         null,
-                        user.getBio()
+                        userEntity.getBio()
                 ))
                 .toList();
         return new ApiResponse.Success<>(users);
     }
 
     public ApiResponse getUser(String username) {
-        User user = userRepository.findByUsernameIgnoreCase(username);
-        if(user==null){
+        UserEntity userEntity = userRepository.findByUsernameIgnoreCase(username);
+        if(userEntity ==null){
             throw new UserNotFoundException("username not found");
         }
 
         UserDto.Data data = new UserDto.Data(
-                user.getId(),
-                user.getUsername(),
-                user.getPfp_url(),
-                user.getFollowers(),
-                user.getFollowing(),
-                user.getCreatedAt(),
-                user.getBio()
+                userEntity.getId(),
+                userEntity.getUsername(),
+                userEntity.getPfp_url(),
+                userEntity.getFollowers(),
+                userEntity.getFollowing(),
+                userEntity.getCreatedAt(),
+                userEntity.getBio()
 
         );
         return new ApiResponse.Success<>(data);
     }
 
     public ApiResponse updateUser(String username, UserDto.Patch dto) {
-        User user = userRepository.findByUsernameIgnoreCase(username);
+        UserEntity userEntity = userRepository.findByUsernameIgnoreCase(username);
 
-        if (user == null) {
+        if (userEntity == null) {
             throw new UserNotFoundException("User not found");
         }
 
         if(dto.bio()!=null && !dto.bio().isEmpty()){
-            user.setBio(dto.bio());
+            userEntity.setBio(dto.bio());
         }
         if(dto.pfp_url()!=null && !dto.pfp_url().isEmpty()){
-            user.setPfp_url(dto.pfp_url());
+            userEntity.setPfp_url(dto.pfp_url());
         }
 
-        userRepository.save(user);
+        userRepository.save(userEntity);
 
         UserDto.Data data = new UserDto.Data(
-                user.getId(),
-                user.getUsername(),
-                user.getPfp_url(),
-                user.getFollowers(),
-                user.getFollowing(),
-                user.getCreatedAt(),
-                user.getBio()
+                userEntity.getId(),
+                userEntity.getUsername(),
+                userEntity.getPfp_url(),
+                userEntity.getFollowers(),
+                userEntity.getFollowing(),
+                userEntity.getCreatedAt(),
+                userEntity.getBio()
         );
         return new ApiResponse.Success<>(data);
     }
 
 
     public void deleteUser(String username){
-        User user = userRepository.findByUsernameIgnoreCase(username);
+        UserEntity userEntity = userRepository.findByUsernameIgnoreCase(username);
 
-        if (user == null) {
+        if (userEntity == null) {
             throw new UserNotFoundException("User not found");
         }
-        userRepository.delete(user);
+        userRepository.delete(userEntity);
     }
 
 }

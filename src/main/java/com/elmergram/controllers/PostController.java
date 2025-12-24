@@ -1,11 +1,10 @@
 package com.elmergram.controllers;
 
 import com.elmergram.dto.PostDto;
-import com.elmergram.models.Post;
 import com.elmergram.responses.ApiResponse;
 import com.elmergram.services.PostService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +12,13 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.elmergram.constants.URLs.POST.*;
 
-@CrossOrigin(origins = "*")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(BASE_URL)
 public class PostController {
 
     private final PostService postService;
 
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
 
     @GetMapping(GET_POST)
     public ResponseEntity<ApiResponse> getUserPost( @PathVariable Integer postId){

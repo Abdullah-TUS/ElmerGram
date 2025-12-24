@@ -4,8 +4,8 @@ import com.elmergram.dto.ExplorerDto;
 import com.elmergram.dto.PostDto;
 import com.elmergram.exceptions.posts.PostNotFoundException;
 import com.elmergram.exceptions.users.UserNotFoundException;
-import com.elmergram.models.Post;
-import com.elmergram.models.User;
+import com.elmergram.models.PostEntity;
+import com.elmergram.models.UserEntity;
 import com.elmergram.repositories.PostRepository;
 import com.elmergram.repositories.UserRepository;
 import com.elmergram.responses.ApiResponse;
@@ -13,8 +13,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class PostService {
@@ -28,17 +26,18 @@ public class PostService {
 
     public ApiResponse getUserPosts(Pageable page, String username) {
 
-        User user = userRepository.findByUsernameIgnoreCase(username);
-        if (user == null) {
+        UserEntity userEntity = userRepository.findByUsernameIgnoreCase(username);
+        if (userEntity == null) {
             throw new UserNotFoundException("username not found");
         }
 
-        Page<Post> postPage = postRepository.findByUserId(user.getId(), page);
+        Page<PostEntity> postPage = postRepository.findByUser_Id(userEntity.getId(), page);
 
         Page<PostDto.Summary> dtoPage = postPage.map(post ->
                 new PostDto.Summary(
                         post.getId(),
-                        post.getMedia()
+                        post.getMedia(),
+                        username
                 )
         );
 
@@ -74,40 +73,34 @@ public class PostService {
     @Transactional
     public ApiResponse addPost(PostDto.Create dto){
 
-        User user = userRepository.findByUsernameIgnoreCase(dto.username());
-        if (user == null) {
+        UserEntity userEntity = userRepository.findByUsernameIgnoreCase(dto.username());
+        if (userEntity == null) {
             throw new UserNotFoundException("username not found");
         }
 
-        Post post = new Post();
-        post.setDescription(dto.description());
-        post.setMedia(dto.media());
-        post.setUser(user);
+        PostEntity postEntity = new PostEntity();
+        postEntity.setDescription(dto.description());
+        postEntity.setMedia(dto.media());
+        postEntity.setUser(userEntity);
 
-        post = postRepository.save(post);
+        postEntity = postRepository.save(postEntity);
 
         PostDto.Detail resDto = new PostDto.Detail(
-                post.getId(),
-                post.getDescription(),
-                post.getMedia(),
-                post.getLikes(),
-                post.getCreatedAt(),
-                post.getUser().getId()
+                postEntity.getId(),
+                postEntity.getDescription(),
+                postEntity.getMedia(),
+                postEntity.getLikes(),
+                postEntity.getCreatedAt(),
+                postEntity.getUser().getId()
         );
 
         return new ApiResponse.Success<>(resDto);
     }
 
     public ApiResponse getExplorerPosts(Pageable pageable) {
-        var page = postRepository.findAll(pageable);
-
+        var page = postRepository.findAllPostSummaries(pageable);
         ExplorerDto.Response response = new ExplorerDto.Response(
-                page.getContent().stream().map(
-                        post -> new PostDto.Summary(
-                                post.getId(),
-                                post.getMedia()
-                        )
-                ).toList(),
+                page.getContent(),
                 page.getNumber(),
                 page.getSize(),
                 page.getNumberOfElements(),
