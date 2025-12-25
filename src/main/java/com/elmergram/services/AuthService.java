@@ -11,7 +11,6 @@ import com.elmergram.repositories.RoleRepository;
 import com.elmergram.repositories.UserRepository;
 import com.elmergram.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,10 +27,8 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private JwtUtils jwtUtils;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
 
     public void register(AuthDto.Register req){
         if(userRepository.existsByUsername(req.username())){
@@ -67,6 +64,7 @@ public class AuthService {
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
+        assert userDetails != null;
         String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
 
 

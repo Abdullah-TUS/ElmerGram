@@ -10,19 +10,18 @@ import com.elmergram.repositories.PostRepository;
 import com.elmergram.repositories.UserRepository;
 import com.elmergram.responses.ApiResponse;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
-        this.postRepository = postRepository;
-        this.userRepository = userRepository;
-    }
+
 
     public ApiResponse getUserPosts(Pageable page, String username) {
 

@@ -1,7 +1,6 @@
 package com.elmergram.services;
 
 import com.elmergram.dto.UserDto;
-import com.elmergram.exceptions.users.UserAlreadyExistsException;
 import com.elmergram.exceptions.users.UserNotFoundException;
 import com.elmergram.models.UserEntity;
 import com.elmergram.repositories.UserRepository;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class UserService {
@@ -20,38 +18,6 @@ public class UserService {
     public UserService(UserRepository userRepository){
         this.userRepository=userRepository;
     }
-
-    public ApiResponse addUser(UserDto.Create dto) {
-
-        // check if username exists
-        if (userRepository.existsByUsername(dto.username())) {
-            int randomSuffix = new Random().nextInt(900) + 100; // 100-999
-            String suggestion = dto.username()+"_" + randomSuffix;
-            throw new UserAlreadyExistsException(
-                    "Username already used. Maybe try: " + suggestion
-            );        }
-
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(dto.username());
-        userEntity.setBio(dto.bio());
-        userEntity.setPfp_url(dto.pfp_url());
-        userEntity.setPassword(dto.password());
-
-        userRepository.save(userEntity);
-
-        UserDto.Data userData = new UserDto.Data(
-                userEntity.getId(),
-                userEntity.getUsername(),
-                userEntity.getPfp_url(),
-                userEntity.getFollowers(),
-                userEntity.getFollowing(),
-                userEntity.getCreatedAt(),
-                userEntity.getBio()
-        );
-
-        return new ApiResponse.Success<>(List.of(userData));
-    }
-
 
     public ApiResponse getUsers() {
         List<UserDto.Data> users = userRepository.findAll()

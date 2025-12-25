@@ -7,7 +7,6 @@ import com.elmergram.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +20,6 @@ import static com.elmergram.constants.URLs.USER.*;
 public class UserController {
     private final UserService userService;
     private final PostService postService;
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(CREATE_USER)
-    public ResponseEntity<ApiResponse> addUser(@RequestBody UserDto.Create dto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.addUser(dto));
-    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(GET_USERS)
@@ -56,7 +49,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(DELETE_USER)
-    public ResponseEntity deleteUser(@PathVariable String username) {
+    public ResponseEntity<ApiResponse> deleteUser(@PathVariable String username) {
         userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }
