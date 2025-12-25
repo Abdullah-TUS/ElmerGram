@@ -15,10 +15,16 @@ public class AuthDto {
             @Size(min = 3, max = 30, message = "Username must be between 3 and 30 characters")
             String username,
 
+            @Size(max = 200, message = "Bio cannot exceed 200 characters")
+            String bio,
+
+            @Size(max = 500, message = "Profile picture URL cannot exceed 500 characters")
+            String pfp_url,
+
+            @Size(min = 4,max = 12)
             @NotBlank(message = "Password is required")
-            @Size(min = 4, max = 12)
             String password
-    ) {}
+    )  {}
 
     public record LoginResponse(
             String jwt,

@@ -1,4 +1,4 @@
-package com.elmergram.jwt;
+package com.elmergram.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

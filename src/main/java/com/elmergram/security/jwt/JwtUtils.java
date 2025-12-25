@@ -1,4 +1,4 @@
-package com.elmergram.jwt;
+package com.elmergram.security.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -54,25 +55,15 @@ public class GlobalExceptionHandler {
         return buildError(HttpStatus.UNAUTHORIZED, ex.getMessage(), req); // changed from BAD_REQUEST to UNAUTHORIZED
     }
 
-    // --- Spring Security exceptions ---
-    @ExceptionHandler({AuthenticationException.class, BadCredentialsException.class, UsernameNotFoundException.class})
-    public ResponseEntity<ErrorResponse> handleAuthenticationException(Exception ex, WebRequest req) {
-        return buildError(HttpStatus.UNAUTHORIZED, ex.getMessage(), req);
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex, WebRequest req){
-        return buildError(HttpStatus.FORBIDDEN, "You do not have permission to access this resource", req);
-    }
-
-    @ExceptionHandler(InsufficientAuthenticationException.class)
-    public ResponseEntity<ErrorResponse> handleInsufficientAuthException(InsufficientAuthenticationException ex, WebRequest req){
-        return buildError(HttpStatus.UNAUTHORIZED, "Authentication is required to access this resource", req);
-    }
-
     // --- General fallback ---
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex, WebRequest req){
+        if(ex instanceof AuthorizationDeniedException)
+            return buildError(HttpStatus.FORBIDDEN, "You do not have permission to access this resource", req);
+
+        if(ex instanceof InsufficientAuthenticationException)
+            return buildError(HttpStatus.UNAUTHORIZED, "Authentication is required to access this resource", req);
+
         return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Something went VERY wrong: "+ex.getMessage(), req);
     }
 }

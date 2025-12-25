@@ -1,27 +1,22 @@
 package com.elmergram.services;
 
 import com.elmergram.dto.AuthDto;
-import com.elmergram.dto.UserDto;
 import com.elmergram.enums.RoleName;
 import com.elmergram.exceptions.auth.InvalidCredentialsException;
 import com.elmergram.exceptions.users.UserAlreadyExistsException;
-import com.elmergram.exceptions.users.UserNotFoundException;
-import com.elmergram.jwt.JwtUtils;
+import com.elmergram.security.jwt.JwtUtils;
 import com.elmergram.models.RoleEntity;
 import com.elmergram.models.UserEntity;
 import com.elmergram.repositories.RoleRepository;
 import com.elmergram.repositories.UserRepository;
 import com.elmergram.responses.ApiResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +41,10 @@ public class AuthService {
         UserEntity user = new UserEntity();
         user.setUsername(req.username());
         user.setPassword(encoder.encode(req.password()));
+        if(req.bio()!=null) user.setBio(req.bio());
+        if(req.pfp_url()!=null) user.setPfp_url(req.pfp_url());
+
+
         RoleEntity defaultRole = roleRepository.findByName(RoleName.ROLE_USER).orElseThrow();
         user.setRole(defaultRole);
         userRepository.save(user);
