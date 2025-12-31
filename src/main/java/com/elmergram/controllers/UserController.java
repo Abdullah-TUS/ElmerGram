@@ -34,10 +34,10 @@ public class UserController {
 
     @GetMapping(GET_USER_POSTS)
     public ResponseEntity<ApiResponse> getUserPosts(@PathVariable String username,
-                                                    @RequestParam(value = "pageNumber",defaultValue = "0",required = false)int pageNumber,
+                                                    @RequestParam(value = "pageNumber",defaultValue = "1",required = false)int pageNumber,
                                                     @RequestParam(value = "pageSize",defaultValue = "10",required = false)int pageSize
                                                     ) {
-        Pageable page = PageRequest.of(pageNumber,pageSize);
+        Pageable page = PageRequest.of(pageNumber-1,pageSize);
         return ResponseEntity.ok(postService.getUserPosts(page,username));
     }
 

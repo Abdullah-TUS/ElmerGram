@@ -5,10 +5,13 @@ import java.util.List;
 
 public class ApiResponse {
     public static class Success<T> extends ApiResponse {
-        public T data;
-        public Instant timestamp = Instant.now();
+        public final T data;
+        public final Instant timestamp;
 
-        public Success(T data) { this.data = data; }
+        public Success(T data) {
+            this.data = data;
+            this.timestamp = Instant.now();
+        }
     }
 
     public static class Error extends ApiResponse {

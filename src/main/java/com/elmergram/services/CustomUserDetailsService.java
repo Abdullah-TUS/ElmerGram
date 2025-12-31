@@ -2,6 +2,7 @@ package com.elmergram.services;
 
 import com.elmergram.models.UserEntity;
 import com.elmergram.repositories.UserRepository;
+import com.elmergram.security.user.AppUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,11 +27,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         List<GrantedAuthority> authorities = List.of(
                 new SimpleGrantedAuthority(user.getRole().getName().toString())
         );
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                authorities
-        );
+        // return custom UserDetails carrying id
+        return new AppUserDetails(user.getId(), user.getUsername(), user.getPassword(), authorities);
     }
 
 }

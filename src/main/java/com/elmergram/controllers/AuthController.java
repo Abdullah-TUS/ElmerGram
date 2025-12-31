@@ -23,9 +23,9 @@ public class AuthController {
 
 
     @PostMapping(REGISTER)
-    public ResponseEntity<String> register(@Valid @RequestBody AuthDto.Register dto){
+    public ResponseEntity<ApiResponse.Success<String>> register(@Valid @RequestBody AuthDto.Register dto){
         authService.register(dto);
-        return ResponseEntity.ok("User Registered!!!");
+        return ResponseEntity.ok(new ApiResponse.Success<>("User registered"));
     }
 
     @PostMapping(LOGIN)

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -32,11 +33,12 @@ public class JwtUtils {
         return null;
     }
 
-    public String generateTokenFromUsername(UserDetails userDetails) {
+    public String generateTokenFromUsername(UserDetails userDetails, Integer userId) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .addClaims(Map.of("userId", userId))
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -46,6 +48,26 @@ public class JwtUtils {
                 .verifyWith((SecretKey) key())
                 .build().parseSignedClaims(token)
                 .getPayload().getSubject();
+    }
+
+    public Integer getUserIdFromJwtToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(key())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        // claim might be Number (Integer/Long) depending on parser; handle safely
+        Object raw = claims.get("userId");
+        if (raw instanceof Number) {
+            return ((Number) raw).intValue();
+        }
+        if (raw instanceof String) {
+            try {
+                return Integer.valueOf((String) raw);
+            } catch (NumberFormatException ignored) {}
+        }
+        return null;
     }
 
 

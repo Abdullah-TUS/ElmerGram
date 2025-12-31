@@ -3,6 +3,7 @@ package com.elmergram.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.List;
@@ -29,11 +30,7 @@ public class PostDto {
 
     public record Create(
             String description,
-            @NotBlank(message = "a post must have media.")
-            String media,
-            @NotNull(message = "user id must be provided.")
-            @Min(value = 1, message = "user id must be at least 1.")
-            String username
+            MultipartFile media
     ) {}
 
     public record Response(

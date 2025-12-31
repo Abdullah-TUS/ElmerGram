@@ -65,10 +65,13 @@ public class AuthService {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         assert userDetails != null;
-        String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
+        UserEntity user = userRepository.findByUsernameIgnoreCase(userDetails.getUsername());
+        Integer userId = user != null ? user.getId() : null;
+
+        String jwtToken = jwtUtils.generateTokenFromUsername(userDetails,userId);
 
 
-        return new ApiResponse.Success<>(new AuthDto.LoginResponse(jwtToken,userDetails.getUsername()));
+        return new ApiResponse.Success<>(new AuthDto.LoginResponse(jwtToken, userDetails.getUsername()));
     }
 
 }

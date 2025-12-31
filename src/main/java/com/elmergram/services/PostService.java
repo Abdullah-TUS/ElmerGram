@@ -15,13 +15,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-
+    private final SupabaseService  supabaseService;
 
     public ApiResponse getUserPosts(Pageable page, String username) {
 
@@ -35,7 +37,7 @@ public class PostService {
         Page<PostDto.Summary> dtoPage = postPage.map(post ->
                 new PostDto.Summary(
                         post.getId(),
-                        post.getMedia(),
+                        supabaseService.getPublicImageUrl(post.getMedia()),
                         username
                 )
         );
@@ -60,7 +62,7 @@ public class PostService {
                 post -> new PostDto.Detail(
                         post.getId(),
                         post.getDescription(),
-                        post.getMedia(),
+                        supabaseService.getPublicImageUrl(post.getMedia()),
                         post.getLikes(),
                         post.getCreatedAt(),
                         post.getUser().getId()
@@ -70,16 +72,24 @@ public class PostService {
     }
 
     @Transactional
-    public ApiResponse addPost(PostDto.Create dto){
+    public ApiResponse addPost(PostDto.Create dto,int userId){
 
-        UserEntity userEntity = userRepository.findByUsernameIgnoreCase(dto.username());
-        if (userEntity == null) {
-            throw new UserNotFoundException("username not found");
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException("couldn't find user by id."));
+        if (dto.media() == null || dto.media().isEmpty()) {
+            throw new IllegalArgumentException("Media file is required");
+        }
+
+        String filename;
+        try{
+            filename=supabaseService.uploadFile(dto.media().getBytes(),dto.media().getOriginalFilename(),userId);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         PostEntity postEntity = new PostEntity();
         postEntity.setDescription(dto.description());
-        postEntity.setMedia(dto.media());
+        postEntity.setMedia(filename);
         postEntity.setUser(userEntity);
 
         postEntity = postRepository.save(postEntity);
@@ -100,7 +110,7 @@ public class PostService {
         var page = postRepository.findAllPostSummaries(pageable);
         ExplorerDto.Response response = new ExplorerDto.Response(
                 page.getContent(),
-                page.getNumber(),
+                page.getNumber()+1,
                 page.getSize(),
                 page.getNumberOfElements(),
                 page.getTotalPages(),

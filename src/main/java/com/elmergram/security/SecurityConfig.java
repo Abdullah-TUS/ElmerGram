@@ -37,7 +37,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth ->
                 auth.requestMatchers(
                                 "/api/v1/auth/**",
-                                "/api/v1/posts/explorer"
+                                "/api/v1/posts/explorer",
+                        "/api/v1/dev/**"
                         ).permitAll()
                         .anyRequest().authenticated()
         );
