@@ -1,13 +1,12 @@
 package com.elmergram.dto;
 
-
-import com.elmergram.models.RoleEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.time.Instant;
 import java.util.List;
+
 
 public class UserDto {
     public record Create(
@@ -46,15 +45,14 @@ public class UserDto {
             @Size(max = 500, message = "Profile picture URL cannot exceed 500 characters")
             String pfp_url
     ) {}
-    public record UserData(
-            Integer id,
-            String username,
-            String pfp_url,
-            Integer followers,
-            Integer following,
-            Instant created_at,
-            String bio,
-            List<RoleEntity> Roles
+    public record Response(
+            List<UserDto.Data> content,
+            int pageNumber,
+            int pageSize,
+            long totalElements,
+            int totalPages,
+            boolean last
+
     ){}
 }
 

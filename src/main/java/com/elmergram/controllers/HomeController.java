@@ -24,18 +24,4 @@ public class    HomeController {
     public String redirectToSwagger(){
         return "redirect:/swagger-ui/index.html";
     }
-
-
-//    @PostMapping("/upload")
-//    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file)
-//            throws IOException {
-//
-//        String path = supabaseService.uploadFile(
-//                file.getBytes(),
-//                file.getOriginalFilename(),
-//                1L // test user id
-//        );
-//
-//        return ResponseEntity.ok(path);
-//    }
     }

@@ -1,11 +1,14 @@
 package com.elmergram.services;
 
+import com.elmergram.dto.PostDto;
 import com.elmergram.dto.UserDto;
 import com.elmergram.exceptions.users.UserNotFoundException;
 import com.elmergram.models.UserEntity;
 import com.elmergram.repositories.UserRepository;
 import com.elmergram.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,21 +22,35 @@ public class UserService {
         this.userRepository=userRepository;
     }
 
-    public ApiResponse getUsers() {
-        List<UserDto.Data> users = userRepository.findAll()
+    public ApiResponse getUsers(Pageable pageable) {
+
+        Page<UserEntity> page = userRepository.findAll(pageable);
+
+        List<UserDto.Data> users = page.getContent()
                 .stream()
-                .map(userEntity -> new UserDto.Data(
-                        userEntity.getId(),
-                        userEntity.getUsername(),
-                        userEntity.getPfp_url(),
-                        null,
-                        null,
-                        null,
-                        userEntity.getBio()
+                .map(user -> new UserDto.Data(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getPfp_url(),
+                        user.getFollowers(),
+                        user.getFollowing(),
+                        user.getCreatedAt(),
+                        user.getBio()
                 ))
                 .toList();
-        return new ApiResponse.Success<>(users);
+
+        UserDto.Response res = new UserDto.Response(
+                users,
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.isLast()
+        );
+
+        return new ApiResponse.Success<>(res);
     }
+
 
     public ApiResponse getUser(String username) {
         UserEntity userEntity = userRepository.findByUsernameIgnoreCase(username);

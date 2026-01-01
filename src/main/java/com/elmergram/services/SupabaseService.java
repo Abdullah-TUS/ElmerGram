@@ -1,5 +1,6 @@
 package com.elmergram.services;
 
+import com.elmergram.utils.ImageUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import java.util.UUID;
 public class SupabaseService {
 
     @Value("${SUPABASE_URL}")
-
     private  String supabaseUrl;
     @Value("${SUPABASE_SERVICE_KEY}")
     private  String supabaseKey;
@@ -20,45 +20,35 @@ public class SupabaseService {
     // stores image in supabase Storage
     public String uploadFile(byte[] fileBytes, String originalFilename, int userId) {
 
-        String extension = "bin";
-        String contentType = "application/octet-stream";
+        ImageUtils.validateImage(fileBytes, originalFilename);
 
-        if (originalFilename != null && originalFilename.contains(".")) {
-            extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
-            contentType = switch (extension) {
-                case "png" -> "image/png";
-                case "jpg", "jpeg" -> "image/jpeg";
-                case "gif" -> "image/gif";
-                default -> "application/octet-stream";
-            };
-        }
+        String extension = originalFilename
+                .substring(originalFilename.lastIndexOf('.') + 1)
+                .toLowerCase();
 
-        String generatedFileName =
-                "posts/" + userId + "/" + UUID.randomUUID() + "." + extension;
+        String contentType = switch (extension) {
+            case "png" -> "image/png";
+            case "jpg", "jpeg" -> "image/jpeg";
+            case "gif" -> "image/gif";
+            default -> "application/octet-stream";
+        };
 
-        String url = supabaseUrl + "/storage/v1/object/elmergram/" + generatedFileName;
+        String fileName = "posts/" + userId + "/" + UUID.randomUUID() + "." + extension;
+        String url = supabaseUrl + "/storage/v1/object/elmergram/" + fileName;
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + supabaseKey);
+        headers.setBearerAuth(supabaseKey);
         headers.set("apikey", supabaseKey);
         headers.set("x-upsert", "true");
         headers.setContentType(MediaType.parseMediaType(contentType));
 
         HttpEntity<byte[]> request = new HttpEntity<>(fileBytes, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(
-                url,
-                HttpMethod.PUT,
-                request,
-                String.class
-        );
+        restTemplate.exchange(url, HttpMethod.PUT, request, Void.class);
 
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("Supabase upload failed");
-        }
-
-        return generatedFileName;
+        return fileName;
     }
+
 
     // gets the image from supabase storage
     public String getPublicImageUrl(String filePath) {

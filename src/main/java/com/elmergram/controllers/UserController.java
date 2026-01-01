@@ -23,8 +23,11 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(GET_USERS)
-    public ResponseEntity<ApiResponse> getAllUsers() {
-        return ResponseEntity.ok(userService.getUsers());
+    public ResponseEntity<ApiResponse> getAllUsers(@RequestParam(value = "pageNumber",defaultValue = "1",required = false)int pageNumber,
+                                                   @RequestParam(value = "pageSize",defaultValue = "10",required = false)int pageSize
+    ) {
+        Pageable page = PageRequest.of(pageNumber-1,pageSize);
+        return ResponseEntity.ok(userService.getUsers(page));
     }
 
     @GetMapping(GET_USER)
