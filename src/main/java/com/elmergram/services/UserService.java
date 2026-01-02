@@ -1,6 +1,5 @@
 package com.elmergram.services;
 
-import com.elmergram.dto.PostDto;
 import com.elmergram.dto.UserDto;
 import com.elmergram.exceptions.users.UserNotFoundException;
 import com.elmergram.models.UserEntity;

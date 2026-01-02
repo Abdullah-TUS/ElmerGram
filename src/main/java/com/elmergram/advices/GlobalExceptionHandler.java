@@ -6,8 +6,6 @@ import com.elmergram.exceptions.users.UserAlreadyExistsException;
 import com.elmergram.exceptions.users.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -49,18 +47,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleInvalidCredentialsException(InvalidCredentialsException ex, WebRequest req){
         return buildError(HttpStatus.UNAUTHORIZED, ex.getMessage(), req); // changed from BAD_REQUEST to UNAUTHORIZED
-    }
-
-    // --- General fallback ---
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex, WebRequest req){
-        if(ex instanceof AuthorizationDeniedException)
-            return buildError(HttpStatus.FORBIDDEN, "You do not have permission to access this resource", req);
-
-        if(ex instanceof InsufficientAuthenticationException)
-            return buildError(HttpStatus.UNAUTHORIZED, "Authentication is required to access this resource", req);
-
-        return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Something went VERY wrong: "+ex.getMessage(), req);
     }
 }
 

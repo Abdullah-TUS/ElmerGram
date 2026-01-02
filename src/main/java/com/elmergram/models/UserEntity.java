@@ -1,24 +1,19 @@
 package com.elmergram.models;
 
-import com.elmergram.enums.RoleName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +23,7 @@ public class UserEntity {
     private String pfp_url;
     private Integer followers=0;
     private Integer following=0;
+    @JsonIgnore
     private String password;
 
 
