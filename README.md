@@ -123,7 +123,7 @@ Base URL: `/api/v1/posts`
 Pagination is implemented using Spring Data `Pageable`.
 
 Common query parameters:
-- `pageNumber` (default: 0)
+- `pageNumber` (default: 1)
 - `pageSize` (default: 10)
 
 ---
