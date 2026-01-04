@@ -1,6 +1,7 @@
 package com.elmergram.services;
 
 import com.elmergram.dto.AuthDto;
+import com.elmergram.enums.ExceptionErrorMessage;
 import com.elmergram.enums.RoleName;
 import com.elmergram.exceptions.auth.InvalidCredentialsException;
 import com.elmergram.exceptions.users.UserAlreadyExistsException;
@@ -32,7 +33,7 @@ public class AuthService {
 
     public void register(AuthDto.Register req){
         if(userRepository.existsByUsername(req.username())){
-            throw new UserAlreadyExistsException("username already exists");
+            throw new UserAlreadyExistsException(ExceptionErrorMessage.USER_ALREADY_EXISTS);
         }
 
         UserEntity user = new UserEntity();
@@ -59,7 +60,7 @@ public class AuthService {
                     )
             );
         } catch (AuthenticationException ex) {
-            throw new InvalidCredentialsException("Invalid user credentials");
+            throw new InvalidCredentialsException(ExceptionErrorMessage.INVALID_CREDENTIALS);
         }
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

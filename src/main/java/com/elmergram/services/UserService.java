@@ -1,6 +1,7 @@
 package com.elmergram.services;
 
 import com.elmergram.dto.UserDto;
+import com.elmergram.enums.ExceptionErrorMessage;
 import com.elmergram.exceptions.users.UserNotFoundException;
 import com.elmergram.models.UserEntity;
 import com.elmergram.repositories.UserRepository;
@@ -54,7 +55,7 @@ public class UserService {
     public ApiResponse getUser(String username) {
         UserEntity userEntity = userRepository.findByUsernameIgnoreCase(username);
         if(userEntity ==null){
-            throw new UserNotFoundException("username not found");
+            throw new UserNotFoundException(ExceptionErrorMessage.USER_NOT_FOUND);
         }
 
         UserDto.Data data = new UserDto.Data(
@@ -74,7 +75,7 @@ public class UserService {
         UserEntity userEntity = userRepository.findByUsernameIgnoreCase(username);
 
         if (userEntity == null) {
-            throw new UserNotFoundException("User not found");
+            throw new UserNotFoundException(ExceptionErrorMessage.USER_NOT_FOUND);
         }
 
         if(dto.bio()!=null && !dto.bio().isEmpty()){
@@ -103,7 +104,7 @@ public class UserService {
         UserEntity userEntity = userRepository.findByUsernameIgnoreCase(username);
 
         if (userEntity == null) {
-            throw new UserNotFoundException("User not found");
+            throw new UserNotFoundException(ExceptionErrorMessage.USER_NOT_FOUND);
         }
         userRepository.delete(userEntity);
     }

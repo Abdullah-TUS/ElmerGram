@@ -2,6 +2,7 @@ package com.elmergram.services;
 
 import com.elmergram.dto.ExplorerDto;
 import com.elmergram.dto.PostDto;
+import com.elmergram.enums.ExceptionErrorMessage;
 import com.elmergram.exceptions.posts.PostNotFoundException;
 import com.elmergram.exceptions.users.UserNotFoundException;
 import com.elmergram.models.PostEntity;
@@ -29,7 +30,7 @@ public class PostService {
 
         UserEntity userEntity = userRepository.findByUsernameIgnoreCase(username);
         if (userEntity == null) {
-            throw new UserNotFoundException("username not found");
+            throw new UserNotFoundException(ExceptionErrorMessage.USER_NOT_FOUND);
         }
 
         Page<PostEntity> postPage = postRepository.findByUser_Id(userEntity.getId(), page);
@@ -67,7 +68,7 @@ public class PostService {
                         post.getCreatedAt(),
                         post.getUser().getId()
                 )
-                        ).orElseThrow(()-> new PostNotFoundException("couldn't find post with the id: "+postId+". wrong id perhaps?"));
+                        ).orElseThrow(()-> new PostNotFoundException(ExceptionErrorMessage.POST_NOT_FOUND));
         return new ApiResponse.Success<>(dto);
     }
 
@@ -75,9 +76,9 @@ public class PostService {
     public ApiResponse addPost(PostDto.Create dto,int userId){
 
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(
-                () -> new UserNotFoundException("couldn't find user by id."));
+                () -> new UserNotFoundException(ExceptionErrorMessage.USER_NOT_FOUND));
         if (dto.media() == null || dto.media().isEmpty()) {
-            throw new IllegalArgumentException("Media file is required");
+            throw new IllegalArgumentException(ExceptionErrorMessage.MEDIA_REQUIRED.getErrorMessage());
         }
 
         String filename;

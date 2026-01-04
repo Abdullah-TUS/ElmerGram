@@ -1,5 +1,7 @@
 package com.elmergram.services;
 
+import com.elmergram.enums.ExceptionErrorMessage;
+import com.elmergram.exceptions.users.UserNotFoundException;
 import com.elmergram.models.UserEntity;
 import com.elmergram.repositories.UserRepository;
 import com.elmergram.security.user.AppUserDetails;
@@ -22,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userRepository.findByUsernameIgnoreCase(username);
-        if (user == null) throw new UsernameNotFoundException("User not found");
+        if (user == null) throw new UserNotFoundException(ExceptionErrorMessage.USER_NOT_FOUND);
 
         List<GrantedAuthority> authorities = List.of(
                 new SimpleGrantedAuthority(user.getRole().getName().toString())
