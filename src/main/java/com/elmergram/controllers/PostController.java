@@ -6,8 +6,8 @@ import com.elmergram.security.SecurityUtils;
 import com.elmergram.services.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,13 +36,7 @@ public class PostController {
     }
 
     @GetMapping(POST_EXPLORER)
-    public ResponseEntity<ApiResponse> getExplorerPosts(
-            @RequestParam(value = "pageNumber", defaultValue = "1", required = false) int pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
-    ){
-        Pageable page = PageRequest.of(pageNumber-1,pageSize);
-        return  ResponseEntity.ok(
-                postService.getExplorerPosts(page)
-        );
+    public ResponseEntity<ApiResponse> getExplorerPosts(@PageableDefault(size = 20) Pageable page){
+        return  ResponseEntity.ok(postService.getExplorerPosts(page));
     }
 }

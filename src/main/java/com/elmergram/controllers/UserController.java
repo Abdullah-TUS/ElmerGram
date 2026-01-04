@@ -5,8 +5,8 @@ import com.elmergram.responses.ApiResponse;
 import com.elmergram.services.PostService;
 import com.elmergram.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +23,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(GET_USERS)
-    public ResponseEntity<ApiResponse> getAllUsers(@RequestParam(value = "pageNumber",defaultValue = "1",required = false)int pageNumber,
-                                                   @RequestParam(value = "pageSize",defaultValue = "10",required = false)int pageSize
-    ) {
-        Pageable page = PageRequest.of(pageNumber-1,pageSize);
+    public ResponseEntity<ApiResponse> getAllUsers(@PageableDefault(size = 20) Pageable page) {
         return ResponseEntity.ok(userService.getUsers(page));
     }
 
@@ -36,12 +33,8 @@ public class UserController {
     }
 
     @GetMapping(GET_USER_POSTS)
-    public ResponseEntity<ApiResponse> getUserPosts(@PathVariable String username,
-                                                    @RequestParam(value = "pageNumber",defaultValue = "1",required = false)int pageNumber,
-                                                    @RequestParam(value = "pageSize",defaultValue = "10",required = false)int pageSize
-                                                    ) {
-        Pageable page = PageRequest.of(pageNumber-1,pageSize);
-        return ResponseEntity.ok(postService.getUserPosts(page,username));
+    public ResponseEntity<ApiResponse> getUserPosts(@PathVariable String username,@PageableDefault(size = 20) Pageable page)
+    {return ResponseEntity.ok(postService.getUserPosts(page,username));
     }
 
     @PatchMapping(UPDATE_USER)

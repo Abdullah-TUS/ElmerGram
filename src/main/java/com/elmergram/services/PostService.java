@@ -111,7 +111,7 @@ public class PostService {
         var page = postRepository.findAllPostSummaries(pageable);
         ExplorerDto.Response response = new ExplorerDto.Response(
                 page.getContent(),
-                page.getNumber()+1,
+                page.getNumber(),
                 page.getSize(),
                 page.getNumberOfElements(),
                 page.getTotalPages(),
