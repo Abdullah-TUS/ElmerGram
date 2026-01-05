@@ -11,8 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 public class UserEntity {
     @Id
@@ -26,10 +25,8 @@ public class UserEntity {
     @JsonIgnore
     private String password;
 
-
     //ROLES
-
-    @ManyToOne(fetch = FetchType.EAGER) // eager because we always need it
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private RoleEntity role;
 

@@ -9,6 +9,7 @@ import java.util.List;
 
 
 public class UserDto {
+    // not really used now because user created in register
     public record Create(
             @NotBlank(message = "Username is required")
             @Size(min = 3, max = 30, message = "Username must be between 3 and 30 characters")
@@ -33,7 +34,8 @@ public class UserDto {
             Integer followers,
             Integer following,
             Instant created_at,
-            String bio
+            String bio,
+            String role
     ){}
     public record Patch(
             @Size(min = 3, max = 30, message = "Username must be between 3 and 30 characters")

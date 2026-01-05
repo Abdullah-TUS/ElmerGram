@@ -18,11 +18,9 @@ public enum ExceptionErrorMessage {
 
     // MEDIA
     MEDIA_REQUIRED("media file is required"),
-    MEDIA_UPLOAD_FAILED("failed to upload media file"),
+    MEDIA_UPLOAD_FAILED("failed to upload media file");
 
-    // GENERAL
-    BAD_REQUEST("bad request"),
-    INTERNAL_SERVER_ERROR("internal server error");
+
     private final String errorMessage;
 
     ExceptionErrorMessage(String errorMessage) {

@@ -7,7 +7,6 @@ import com.elmergram.models.UserEntity;
 import com.elmergram.repositories.UserRepository;
 import com.elmergram.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,7 @@ public class UserService {
 
     public ApiResponse getUsers(Pageable pageable) {
 
-        Page<UserEntity> page = userRepository.findAll(pageable);
+        var page = userRepository.findAll(pageable);
 
         List<UserDto.Data> users = page.getContent()
                 .stream()
@@ -35,7 +34,8 @@ public class UserService {
                         user.getFollowers(),
                         user.getFollowing(),
                         user.getCreatedAt(),
-                        user.getBio()
+                        user.getBio(),
+                        user.getRole().getName().toString().substring(5) // remove ROLE_
                 ))
                 .toList();
 
@@ -65,7 +65,7 @@ public class UserService {
                 userEntity.getFollowers(),
                 userEntity.getFollowing(),
                 userEntity.getCreatedAt(),
-                userEntity.getBio()
+                userEntity.getBio(),null
 
         );
         return new ApiResponse.Success<>(data);
@@ -94,7 +94,7 @@ public class UserService {
                 userEntity.getFollowers(),
                 userEntity.getFollowing(),
                 userEntity.getCreatedAt(),
-                userEntity.getBio()
+                userEntity.getBio(), null
         );
         return new ApiResponse.Success<>(data);
     }
