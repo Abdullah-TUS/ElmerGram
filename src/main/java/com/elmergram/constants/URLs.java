@@ -22,5 +22,10 @@ public  class URLs {
         public static final String POST_POST = "";
         public static final String POST_EXPLORER = "/explorer";
     }
+
+    public static class REACTION{
+        public static final String BASE_URL = "/api/v1/reactions";
+        public static final String GET_POST_REACTIONS = "/{postId}";
+    }
 }
 
