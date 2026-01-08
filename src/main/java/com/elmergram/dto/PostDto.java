@@ -42,6 +42,9 @@ public class PostDto {
             boolean last
 
     ){}
-
+    public record PostReactionsWithSummary(
+            List<ReactionDto.Response> reactions,
+            ReactionDto.Summary summary
+    ){}
 }
 

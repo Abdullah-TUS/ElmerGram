@@ -13,5 +13,5 @@ import java.util.Optional;
 public interface ReactionRepository extends JpaRepository<ReactionEntity,Integer> {
     List<ReactionEntity> findByPost_Id(int post);
     Optional<ReactionEntity> findByUserAndPost(UserEntity user,PostEntity post);
-
+    Optional<ReactionEntity> findByUserAndPost(int userId,int postId);
 }

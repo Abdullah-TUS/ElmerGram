@@ -26,6 +26,7 @@ public  class URLs {
     public static class REACTION{
         public static final String BASE_URL = "/api/v1/reactions";
         public static final String GET_POST_REACTIONS = "/{postId}";
+        public static final String DELETE_REACTION="/{postId}";
     }
 }
 

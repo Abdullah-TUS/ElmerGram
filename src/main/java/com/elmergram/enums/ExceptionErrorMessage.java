@@ -18,8 +18,10 @@ public enum ExceptionErrorMessage {
 
     // MEDIA
     MEDIA_REQUIRED("media file is required"),
-    MEDIA_UPLOAD_FAILED("failed to upload media file");
+    MEDIA_UPLOAD_FAILED("failed to upload media file"),
 
+    // REACTION
+    REACTION_NOT_FOUND("reaction not found");
 
     private final String errorMessage;
 

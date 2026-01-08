@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 
 public class ReactionDto {
 
@@ -22,6 +24,10 @@ public class ReactionDto {
             @NotNull(message = "postId is required")
             @Positive(message = "postId must be positive")
             Integer postId
+    ){}
 
-            ) {}
+    public record Summary(
+            Map<ReactionType, Long> counts
+    ){}
 }
+
