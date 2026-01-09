@@ -22,7 +22,7 @@ public class UserController {
     private final PostService postService;
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping(GET_USERS)
+    @GetMapping
     public ResponseEntity<ApiResponse> getAllUsers(@PageableDefault(size = 20) Pageable page) {
         return ResponseEntity.ok(userService.getUsers(page));
     }
