@@ -23,29 +23,29 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<ApiResponse> getAllUsers(@PageableDefault(size = 20) Pageable page) {
+    public ResponseEntity<?> getAllUsers(@PageableDefault(size = 20) Pageable page) {
         return ResponseEntity.ok(userService.getUsers(page));
     }
 
     @GetMapping(GET_USER)
-    public ResponseEntity<ApiResponse> getUser(@PathVariable String username){
+    public ResponseEntity<?> getUser(@PathVariable String username){
         return ResponseEntity.ok(userService.getUser(username));
     }
 
     @GetMapping(GET_USER_POSTS)
-    public ResponseEntity<ApiResponse> getUserPosts(@PathVariable String username,@PageableDefault(size = 20) Pageable page)
+    public ResponseEntity<?> getUserPosts(@PathVariable String username,@PageableDefault(size = 20) Pageable page)
     {return ResponseEntity.ok(postService.getUserPosts(page,username));
     }
 
     @PatchMapping(UPDATE_USER)
-    public ResponseEntity<ApiResponse> updateUser(@PathVariable String username,@RequestBody UserDto.Patch dto){
+    public ResponseEntity<?> updateUser(@PathVariable String username,@RequestBody UserDto.Patch dto){
         return ResponseEntity.ok(userService.updateUser(username,dto));
     }
 
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(DELETE_USER)
-    public ResponseEntity<ApiResponse> deleteUser(@PathVariable String username) {
+    public ResponseEntity<?> deleteUser(@PathVariable String username) {
         userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }

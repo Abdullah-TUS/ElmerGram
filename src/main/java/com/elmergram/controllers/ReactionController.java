@@ -21,12 +21,12 @@ public class ReactionController {
     private final SecurityUtils securityUtils;
 
     @GetMapping(GET_POST_REACTIONS)
-    public ResponseEntity<ApiResponse> getPostReactions(@PathVariable int postId) {
+    public ResponseEntity<?> getPostReactions(@PathVariable int postId) {
         return ResponseEntity.ok().body(reactionService.getPostReactions(postId));
     }
 
     @PostMapping(BASE_URL)
-    public ResponseEntity<ApiResponse> createPostReaction(@Valid @RequestBody ReactionDto.Create dto) {
+    public ResponseEntity<?> createPostReaction(@Valid @RequestBody ReactionDto.Create dto) {
          int userId = securityUtils.getCurrentUserId();
         reactionService.addReaction(userId, dto);
         return ResponseEntity.ok().body(new ApiResponse.Success<>("reaction saved."));

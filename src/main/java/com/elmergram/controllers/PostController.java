@@ -24,19 +24,19 @@ public class PostController {
 
 
     @GetMapping(GET_POST)
-    public ResponseEntity<ApiResponse> getUserPost( @PathVariable Integer postId){
+    public ResponseEntity<?> getUserPost( @PathVariable Integer postId){
         return ResponseEntity.ok(postService.getPostDetails(postId));
 
     }
 
     @PostMapping(value = POST_POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse> addPost( @ModelAttribute @Valid PostDto.Create dto){
+    public ResponseEntity<?> addPost( @ModelAttribute @Valid PostDto.Create dto){
         Integer userId = securityUtils.getCurrentUserId();
         return ResponseEntity.ok(postService.addPost(dto,userId));
     }
 
     @GetMapping(POST_EXPLORER)
-    public ResponseEntity<ApiResponse> getExplorerPosts(@PageableDefault(size = 20) Pageable page){
+    public ResponseEntity<?> getExplorerPosts(@PageableDefault(size = 20) Pageable page){
         return  ResponseEntity.ok(postService.getExplorerPosts(page));
     }
 }

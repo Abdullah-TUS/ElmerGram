@@ -23,13 +23,13 @@ public class AuthController {
 
 
     @PostMapping(REGISTER)
-    public ResponseEntity<ApiResponse.Success<String>> register(@Valid @RequestBody AuthDto.Register dto){
+    public ResponseEntity<?> register(@Valid @RequestBody AuthDto.Register dto){
         authService.register(dto);
         return ResponseEntity.ok(new ApiResponse.Success<>("User registered"));
     }
 
     @PostMapping(LOGIN)
-    public ResponseEntity<ApiResponse> login (@Valid @RequestBody AuthDto.Login dto){
+    public ResponseEntity<?> login (@Valid @RequestBody AuthDto.Login dto){
         return ResponseEntity.ok().body(authService.login(dto));
 
     }
