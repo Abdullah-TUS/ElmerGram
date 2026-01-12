@@ -36,6 +36,5 @@ public  class URLs {
         public static final String FOLLOWERS = "/{username}/followers";
         public static final String FOLLOWING = "/{username}/following";
     }
-
 }
 
